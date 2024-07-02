@@ -1,0 +1,71 @@
+clc
+close all
+clear all
+% Definiranje maksimalnog broja predmeta
+MAX_PREDMETA = 5;
+ 
+% Inicijalizacija strukture za studenta
+student.ime = '';
+student.prezime = '';
+student.adresa = '';
+student.predmeti = cell(1, MAX_PREDMETA);
+student.ocjene = zeros(1, MAX_PREDMETA);
+student.prosjek = 0;
+ 
+% Unos podataka sa tastature
+fprintf('Unesite podatke o studentu:\n');
+student.ime = input('Ime: ', 's');
+student.prezime = input('Prezime: ', 's');
+student.adresa = input('Adresa: ', 's');
+ 
+ 
+for i = 1:MAX_PREDMETA
+    predmet = input(sprintf('Unesite ime %d. predmeta: ', i), 's');
+    ocjena = input(sprintf('Unesite ocjenu za predmet %s: ', predmet));
+    student.predmeti{i} = predmet;
+    student.ocjene(i) = ocjena;
+end
+ 
+student.prosjek = mean(student.ocjene);
+ 
+fprintf('\nPodaci o studentu:\n');
+fprintf('Ime: %s\n', student.ime);
+fprintf('Prezime: %s\n', student.prezime);
+fprintf('Adresa: %s\n', student.adresa);
+fprintf('Položeni predmeti i ocjene:\n');
+for i = 1:MAX_PREDMETA
+    fprintf('%s: %d\n', student.predmeti{i}, student.ocjene(i));
+end
+fprintf('Prosjek ocjena: %.2f\n', student.prosjek);
+ 
+% Upit korisnika za spremanje podataka
+odgovor = input('Želite li spremiti podatke u datoteku? (Y/N): ', 's');
+if strcmpi(odgovor, 'Y');
+    ime_datoteke = sprintf('%s_%s.txt', student.ime, student.prezime);
+   
+    % Otvaranje datoteke za pisanje
+    fid = fopen(ime_datoteke,'w');
+   
+    % Provjera da li je uspješno otvorena datoteka
+    if fid == -1
+        error('Nije moguće otvoriti datoteku za pisanje.');
+    end
+   
+    % Spremanje podataka
+    fprintf(fid, 'Podaci o studentu:\n');
+    fprintf(fid, 'Ime: %s\n', student.ime);
+    fprintf(fid, 'Prezime: %s\n', student.prezime);
+    fprintf(fid, 'Adresa: %s\n', student.adresa);
+    fprintf(fid, 'Položeni predmeti i ocjene:\n');
+    for i = 1:MAX_PREDMETA
+        fprintf(fid, '%s: %d\n', student.predmeti{i}, student.ocjene(i));
+    end
+    fprintf(fid, 'Prosjek ocjena: %.2f\n', student.prosjek);
+   
+    % Zatvaranje datoteke
+    fclose(fid);
+   
+    fprintf('Podaci su uspješno spremljeni u datoteku %s.\n', ime_datoteke);
+else
+    fprintf('Podaci nisu spremljeni.\n');
+end
